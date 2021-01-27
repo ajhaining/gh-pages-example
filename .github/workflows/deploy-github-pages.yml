@@ -1,0 +1,37 @@
+name: Deploy to GH Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Configure Cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install and Build
+        uses: actions/setup-node@v2
+      - run: npm install
+      - run: npm run build
+        env:
+          CI: true
+      - run: npm run export
+      - run: touch out/.nojekyll
+
+      - name: Push ./out to gh-pages branch
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+          git add out/
+          git commit -m "Deploy Next.js to gh-pages"
+          git subtree push --prefix out origin gh-pages
