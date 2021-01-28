@@ -1,7 +1,16 @@
-import '../styles/globals.css'
+import "tailwindcss/tailwind.css";
 
-function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
+import { MDXProvider } from "@mdx-js/react";
+import Wrapper from "../components/wrapper";
+
+const components = {
+  wrapper: Wrapper,
+};
+
+export default function App({ Component, pageProps }) {
+  return (
+    <MDXProvider components={components}>
+      <Component {...pageProps} />
+    </MDXProvider>
+  );
 }
-
-export default MyApp
